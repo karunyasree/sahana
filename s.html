@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Saghi — A Birthday For You</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --card:#0f1112;
+      --muted:#bcb6b0;
+      --accent:#d4af37;
+      --glass: rgba(255,255,255,0.03);
+      --radius:18px;
+      --maxw:1000px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial,Helvetica,sans-serif;
+      background:linear-gradient(180deg,#060607 0%,#0b0b0c 50%);
+      color:#eee;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 20px;
+    }
+    .shell{width:100%;max-width:var(--maxw)}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;margin-bottom:28px
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .mark{
+      width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--glass),rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 6px 30px rgba(0,0,0,0.6), inset 0 -6px 18px rgba(255,255,255,0.02);
+      font-family:'Playfair Display',serif;color:var(--accent);font-size:22px;font-weight:700
+    }
+    .title{font-family:'Playfair Display',serif;font-size:20px;color:#fff}
+    .nav{display:flex;gap:12px}
+    .nav a{padding:8px 14px;border-radius:12px;text-decoration:none;color:var(--muted);font-weight:600;background:transparent;border:1px solid transparent;transition:all .18s}
+    .nav a.active, .nav a:hover{color:#fff;border-color:rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:28px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(2,2,2,0.6)}
+    .hero{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start}
+    .hero h1{font-family:'Playfair Display',serif;font-size:44px;margin:0;color:#fff}
+    .hero p.lead{color:var(--muted);margin-top:8px}
+
+    .photo{
+      width:100%;height:340px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0d0d0d,#131313)
+    }
+    .photo img{width:100%;height:100%;object-fit:cover}
+
+    .btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:600}
+    .btn.gold{background:linear-gradient(90deg,var(--accent),#f4d88b);color:#0a0a0a}
+    .btn.ghost{border:1px solid rgba(255,255,255,0.06);color:var(--muted);background:transparent}
+
+    section{margin-top:20px}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .about-text p{color:var(--muted)}
+
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .thumb{height:120px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+
+    .prose{background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .prose h2{font-family:'Playfair Display',serif;color:var(--accent)}
+
+    .moods{display:flex;gap:10px;flex-wrap:wrap}
+    .moods button{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+
+    footer{margin-top:26px;text-align:center;color:var(--muted);font-size:14px}
+
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr;}
+      .gallery-grid{grid-template-columns:repeat(2,1fr)}
+      .about-grid{grid-template-columns:1fr}
+    }
+
+    .view{display:none}
+    .view.active{display:block}
+
+    .modal{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:120}
+    .modal .mcard{width:92%;max-width:560px;background:var(--card);padding:20px;border-radius:14px}
+    .close{float:right;cursor:pointer;color:var(--muted)}
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark">S</div>
+        <div>
+          <div class="title">Saghi — for the one we celebrate</div>
+          <div style="color:var(--muted);font-size:13px">A small website made with a lot of love</div>
+        </div>
+      </div>
+      <nav class="nav" id="mainNav">
+        <a href="#home" data-view="home" class="active">Home</a>
+        <a href="#about" data-view="about">About</a>
+        <a href="#gallery" data-view="gallery">Gallery</a>
+        <a href="#poem" data-view="poem">Poem</a>
+        <a href="#letter" data-view="letter">Letter</a>
+        <a href="#moods" data-view="moods">For You</a>
+        <a href="#thanks" data-view="thanks">Thank You</a>
+      </nav>
+    </header>
+
+    <main class="card">
+
+      <!-- HOME -->
+      <div id="home" class="view active">
+        <div class="hero">
+          <div>
+            <h1>Happy Birthday, <span style="color:var(--accent)">Saghi</span></h1>
+            <p class="lead">Today we celebrate you — your warmth, your laughter, and the little moments that make life golden.</p>
+            <div style="margin-top:18px">
+              <a class="btn gold" onclick="navigate('poem')">Read the Poem</a>
+              <a class="btn ghost" onclick="navigate('gallery')" style="margin-left:10px">See Memories</a>
+            </div>
+
+            <section style="margin-top:18px">
+              <div class="prose">
+                <h2 style="margin:0 0 8px 0">A tiny note</h2>
+                <p style="margin:0;color:var(--muted)">This site is made to hold a few of the moments, words, and surprises meant only for you.</p>
+              </div>
+            </section>
+
+          </div>
+
+          <aside>
+            <div class="photo">
+              <img src="sagi 1.jpg">
+            </div>
+            <div style="margin-top:12px;display:flex;gap:10px;justify-content:flex-end">
+              <a class="btn" onclick="navigate('moods')">If you need a pick-me-up</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      
+      <!-- GALLERY -->
+      <div id="gallery" class="view">
+        <section>
+          <h2 style="font-family:'Playfair Display',serif">Gallery</h2>
+          <p style="color:var(--muted)">A few memories.</p>
+          <div class="gallery-grid" id="galleryGrid">
+                 <div class="thumb"><img src="sagi 2.jpg"></div>
+      <div class="thumb"><img src="sagi 3.jpg"></div>
+      <div class="thumb"><img src="sagi 4.jpg"></div>
+      <div class="thumb"><img src="sagi 5.jpg"></div>
+      <div class="thumb"><img src="sagi 6.jpg"></div>
+      <div class="thumb"><img src="sagi 7.jpg"></div>
+      <div class="thumb"><img src="sagi 8.jpg"></div>
+      <div class="thumb"><img src="sagi 9.jpg"></div>
+      <div class="thumb"><img src="sagi 10.jpg"></div>
+      <div class="thumb"><img src="sagi 11.jpg"></div>
+      <div class="thumb"><img src="sagi 12.jpg"></div>
+      <div class="thumb"><img src="sagi 13.jpg"></div>
+      <div class="thumb"><img src="sagi 14.jpg"></div>
+      <div class="thumb"><img src="sagi 15.jpg"></div>
+      <div class="thumb"><img src="sagi 16.jpg"></div>
+      <div class="thumb"><img src="sagi 17.jpg"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- POEM -->
+      <div id="poem" class="view">
+        <section>
+          <h2 style="font-family:'Playfair Display',serif">A Poem for Saghi</h2>
+
+          <div class="prose" style="margin-top:12px">
+            <blockquote style="white-space:pre-line;color:#f5efe6">
+
+Here’s this girl we all know—
+kind, soft, and sweet in a way that makes you forget
+how messy the world can be.
+
+She laughs like an ambulance—
+loud, sudden, impossible to ignore—
+and somehow, that sound
+has become one of our favourite things.
+
+She’s a big baby sometimes,
+seeking attention,
+wanting love,
+wanting to feel seen—
+and honestly,
+we love her for that.
+It makes her real.
+
+She has this dramatic spark,
+not the exhausting kind,
+but the kind that turns
+ordinary days into stories
+we’ll still be telling months later.
+
+Her friends are her universe.
+She loves them with everything she has,
+in ways that only someone
+with a soft heart can.
+
+So today,
+on her birthday,
+we hope she feels the same love
+she pours into everyone else—
+loud, bright, overflowing,
+just like her.
+
+HAPPYYYYYYY BIRTHDAYYYYYY! 🎉💖💥
+
+May your day be as dramatic as you,
+as chaotic as your laugh,
+as soft as your heart,
+and as unforgettable as you are.
+
+            </blockquote>
+          </div>
+        </section>
+      </div>
+
+      <!-- LETTER -->
+      <div id="letter" class="view">
+        <section>
+          <h2 style="font-family:'Playfair Display',serif">Letter</h2>
+          <div class="prose" style="margin-top:12px">
+            <div contenteditable="true" id="letterArea" style="min-height:220px;color:var(--muted);outline:none">
+              Dear Saghi,<br><br>
+             
+
+        I don’t know where to start, so I’ll start with the simplest truth —<br>
+        you make the world softer just by being in it.<br><br>
+
+        You are the kind of person who doesn’t realise how much light she carries.  
+        The kind who laughs loudly, cares deeply, loves fiercely and feels everything  
+        with a strange mix of innocence and intensity.  
+        That’s why people remember you — because you’re not forgettable,  
+        not even for a moment.<br><br>
+
+        I made this little website for you because words felt too small,  
+        too ordinary for someone like you.  
+        I wanted to give you something that feels a bit more personal,  
+        a bit more “you,” something that stays even when the day is over.  
+        Something that reminds you you’re loved — not only today,  
+        but every ordinary day too.<br><br>
+
+        You’re dramatic, emotional, loud, soft, stubborn, funny,  
+        confusing, chaotic, kind —  
+        and every single version of you deserves love.  
+        Even the tired ones.  
+        Even the quiet ones.  
+        Even the versions you hide.<br><br>
+
+        If there’s anything I hope you remember from this birthday,  
+        it’s this:<br>
+        you don’t have to try to be special —  
+        you already are.<br><br>
+
+        Thank you for being you.  
+        For existing in this timeline.  
+        For laughing the way you do.  
+        For caring the way you do.  
+        For being a little sunshine wrapped in unnecessary drama.<br><br>
+
+        I hope this year gives you everything your heart is brave enough to wish for.  
+        I hope you stay soft.  
+        I hope you stay you.<br><br>
+
+        Happiest Birthday, Saghi.<br>
+        You deserve the kind of joy that stays.<br><br>
+
+        With a lot of love,<br>
+        Someone who’s very glad you exist 💛
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- MOODS SECTION -->
+      <div id="moods" class="view">
+        <section>
+          <h2 style="font-family:'Playfair Display',serif">For when you need a little lift</h2>
+          <div class="moods" style="margin-top:12px">
+            <button onclick="openModal('unhappy')">Unhappy</button>
+            <button onclick="openModal('spaced')">Spaced Out</button>
+            <button onclick="openModal('stressed')">Stressed</button>
+            <button onclick="openModal('anxious')">Anxious</button>
+            <button onclick="openModal('joy')">Need a Smile</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- THANK YOU -->
+      <div id="thanks" class="view">
+        <section>
+          <h2 style="font-family:'Playfair Display',serif">Thank You</h2>
+          <div class="prose" style="margin-top:12px;text-align:center">
+            <p>With love,</p>
+            <div style="font-family:'Playfair Display',serif;color:var(--accent);font-size:20px">— Your friend</div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+
+    <footer>
+      <div>&copy; <span id="year"></span> Made with care for Saghi</div>
+    </footer>
+
+  </div>
+
+  <div id="modalRoot" style="display:none"></div>
+
+  <script>
+    /* navigation */
+    const views = document.querySelectorAll('.view');
+    const navlinks = document.querySelectorAll('.nav a');
+    function navigate(id){
+      views.forEach(v=>v.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      navlinks.forEach(a=>a.classList.remove('active'));
+      document.querySelector(`.nav a[data-view="${id}"]`).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    document.getElementById('mainNav').addEventListener('click', e=>{
+      if(e.target.tagName==='A'){
+        e.preventDefault();
+        navigate(e.target.getAttribute('data-view'));
+      }
+    });
+
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    /* UPDATED MODAL CONTENT WITH YOUR TEXT */
+    const modalContent = {
+      unhappy:{
+        title:"When you feel Unhappy",
+        text:`It’s okay to feel low.
+You don’t always have to be bright or bubbly or dramatic.
+You’re human. And humans have off days.
+
+You’re allowed to pause.
+You’re allowed to cry.
+You’re allowed to just lie down and exist for a bit.
+
+You don’t become less lovable on sad days.
+You don’t become a burden.
+You don’t become “too much.”
+
+You are still you.
+Still soft.
+Still warm.
+Still someone the world is lucky to have.
+
+Take your time.
+The light will return —
+and I promise,
+so will your smile.`
+      },
+
+      spaced:{
+        title:"🌫️ When you feel Spaced Out",
+        text:`You zone out when your mind gets tired,
+when the world is too loud,
+when your heart is too full,
+or when life pulls you in too many directions.
+
+And you know what?
+It’s okay.
+
+You’re not losing control.
+You’re not being dramatic.
+Your mind just needs space to breathe,
+and that doesn’t make you any less capable or strong.
+
+You will find your way back.
+Always.
+Just give yourself the same patience you give others.`
+      },
+
+      stressed:{
+        title:"🔥 When you feel Stressed",
+        text:`You carry more on your shoulders than people realise.
+You pretend to be okay because you care too much,
+you try to handle everything because you don’t want to trouble anyone,
+and you hide your stress behind jokes, drama, or that loud, chaotic laugh.
+
+But you don’t have to be strong every single second.
+You’re allowed to stop,
+to feel overwhelmed,
+to admit that it’s too much.
+
+You’re doing your best—honestly, more than your best—
+and that is enough.
+You are enough.`
+      },
+
+      anxious:{
+        title:"🌪️ When you feel Anxious",
+        text:`Your anxiety isn’t a weakness —
+it’s a sign that you deeply care,
+that you’re sensitive to the world,
+that your heart is trying to protect you.
+
+I know how it freezes you,
+how it tightens everything inside you,
+how it makes your loud, dramatic soul suddenly quiet.
+
+But you’re stronger than the noise in your head.
+You’ve climbed out of every anxious moment before,
+even the ones that felt impossible at the time.
+
+You will get through this too.
+Breathe.
+You’re not alone,
+even when it feels like you are.`
+      },
+
+      joy:{
+        title:"😊 When you need a Smile",
+        text:`You deserve softness — real, warm, honest softness.
+Not forced smiles, not pretending, not acting okay.
+
+You deserve moments that make your heart feel light,
+moments that remind you how lovable you truly are,
+moments that make your dramatic, loud-laughing, attention-seeking self feel safe and cherished.
+
+You make the world brighter just by being in it.
+Even when you’re tired,
+even when you’re confused,
+even when you feel like a big baby —
+you are someone who matters deeply.
+
+You deserve smiles that come from the heart,
+not effort.`
+      }
+    };
+
+    function openModal(key){
+      const d = modalContent[key];
+      const root = document.getElementById('modalRoot');
+      root.innerHTML =
+      `<div class="modal" id="mmodal">
+         <div class="mcard">
+           <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+             <div style="font-weight:700">${d.title}</div>
+             <div class="close" onclick="closeModal()">✕</div>
+           </div>
+           <div style="color:var(--muted);white-space:pre-line">${d.text}</div>
+           <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end">
+             <button onclick="closeModal()">Close</button>
+             <button onclick="copyEncouragement('${key}')">Copy</button>
+           </div>
+         </div>
+       </div>`;
+      root.style.display='block';
+    }
+
+    function closeModal(){
+      const r = document.getElementById('modalRoot');
+      r.innerHTML='';
+      r.style.display='none';
+    }
+
+    function copyEncouragement(key){
+      const d = modalContent[key];
+      navigator.clipboard.writeText(d.title+"\n\n"+d.text);
+      alert('Copied!');
+    }
+
+    document.getElementById('galleryGrid').addEventListener('click', e=>{
+      const img = e.target.closest('img');
+      if(!img) return;
+      const root = document.getElementById('modalRoot');
+      root.innerHTML =
+      `<div class="modal" onclick="closeModal()">
+         <div class="mcard" onclick="event.stopPropagation()">
+           <div style="text-align:right"><span class="close" onclick="closeModal()">✕</span></div>
+           <img src="${img.src}" style="width:100%;border-radius:10px;">
+         </div>
+       </div>`;
+      root.style.display='block';
+    });
+
+    window.addEventListener('hashchange', ()=>{
+      const id = location.hash.replace('#','');
+      if(document.getElementById(id)) navigate(id);
+    });
+    if(location.hash){
+      const id = location.hash.replace('#','');
+      if(document.getElementById(id)) navigate(id);
+    }
+  </script>
+</body>
+</html>
